@@ -2,5 +2,5 @@
 
 ## Author:
 
-Muhammad Mahiva Bentar Raharja
-Firlydani Syifana Putra
+- Muhammad Mahiva Bentar Raharja
+- Firlydani Syifana Putra
