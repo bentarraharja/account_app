@@ -1,7 +1,6 @@
 package main
 
 import (
-	"account_app"
 	"database/sql"
 	"fmt"
 	"log"
@@ -10,9 +9,51 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func main() {
-	var choice int
+type EnvConfig struct {
+	DB_USERNAME string
+	DB_PASSWORD string
+	DB_HOST     string
+	DB_PORT     string
+	DB_NAME     string
+}
 
+func InitDB() (*sql.DB, error) {
+	var config = EnvConfig{
+		DB_USERNAME: os.Getenv("DB_USERNAME"),
+		DB_PASSWORD: os.Getenv("DB_PASSWORD"),
+		DB_HOST:     os.Getenv("DB_HOST"),
+		DB_PORT:     os.Getenv("DB_PORT"),
+		DB_NAME:     os.Getenv("DB_NAME"),
+	}
+	var connectionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", config.DB_USERNAME, config.DB_PASSWORD, config.DB_HOST, config.DB_PORT, config.DB_NAME)
+	var db *sql.DB
+	var err error
+	// Cek konfigurasi database
+	db, err = sql.Open("mysql", connectionString)
+	if err != nil {
+		log.Println("error open connection to db: ", err)
+		return nil, err
+	}
+
+	// Cek ping connection
+	pingErr := db.Ping()
+	if pingErr != nil {
+		log.Println("error ping conenction: ", pingErr)
+		return nil, pingErr
+	}
+	fmt.Println("success connect to db!")
+	return db, nil
+}
+
+func main() {
+	db, errInitDB := InitDB()
+	if errInitDB != nil {
+		log.Fatal("error connect to db ", errInitDB)
+	}
+	//Close connection to database
+	defer db.Close()
+
+	var choice int
 	for {
 		// Menampilkan menu
 		fmt.Println("Menu:")
