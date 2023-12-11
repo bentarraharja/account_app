@@ -1,5 +1,6 @@
-## Group Project Account App
+# Group Project Account App
 
-# Muhammad Mahiva Bentar Raharja
+## Author:
 
-# Firlydani Syifana Putra
+'''Muhammad Mahiva Bentar Raharja'''
+'''Firlydani Syifana Putra'''
