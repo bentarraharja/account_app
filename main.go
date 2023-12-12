@@ -75,7 +75,7 @@ func main() {
 		// Melakukan aksi berdasarkan pilihan menu
 		switch choice {
 		case 1:
-			AddAccount()
+			controllers.AddAccount(db)
 		case 2:
 			Login()
 		case 3:
@@ -83,7 +83,10 @@ func main() {
 		case 4:
 			UpdateAccount()
 		case 5:
-			DeleteAccount()
+			var accountID int
+			fmt.Print("Enter the ID of the account to soft delete: ")
+			fmt.Scan(&accountID)
+			controllers.DeleteAccount(db, accountID)
 		case 6:
 			TopUp()
 		case 7:
