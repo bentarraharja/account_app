@@ -1,6 +1,7 @@
 package main
 
 import (
+	"account_app/controllers"
 	"database/sql"
 	"fmt"
 	"log"
@@ -74,25 +75,25 @@ func main() {
 		// Melakukan aksi berdasarkan pilihan menu
 		switch choice {
 		case 1:
-			addAccount()
+			AddAccount()
 		case 2:
-			login()
+			Login()
 		case 3:
-			readAccount()
+			controllers.ReadAccount(db)
 		case 4:
-			updateAccount()
+			UpdateAccount()
 		case 5:
-			deleteAccount()
+			DeleteAccount()
 		case 6:
-			topUp()
+			TopUp()
 		case 7:
-			transfer()
+			Transfer()
 		case 8:
-			historyTopUp()
+			HistoryTopUp()
 		case 9:
-			historyTransfer()
+			HistoryTransfer()
 		case 10:
-			viewOtherUserProfile()
+			ViewOtherUserProfile()
 		case 0:
 			fmt.Println("Terima kasih telah bertransaksi.")
 			return
