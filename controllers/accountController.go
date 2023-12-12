@@ -54,7 +54,7 @@ func ReadAccount(db *sql.DB) {
 	var accounts []entities.Account
 
 	// menjalankan perintah query SELECT
-	rows, errSelect := db.Query("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at FROM accounts")
+	rows, errSelect := db.Query("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts")
 	// handle error query SELECT
 	if errSelect != nil {
 		log.Fatal("error run query SELECT ", errSelect.Error())
@@ -64,7 +64,7 @@ func ReadAccount(db *sql.DB) {
 	for rows.Next() {
 		var dataAccount entities.Account
 		// proses scan dataAccount
-		errScan := rows.Scan(&dataAccount.ID, &dataAccount.FullName, &dataAccount.Address, &dataAccount.Phone, &dataAccount.Email, &dataAccount.Password, &dataAccount.Balance, &dataAccount.CreatedAt, &dataAccount.UpdatedAt)
+		errScan := rows.Scan(&dataAccount.ID, &dataAccount.FullName, &dataAccount.Address, &dataAccount.Phone, &dataAccount.Email, &dataAccount.Password, &dataAccount.Balance, &dataAccount.CreatedAt, &dataAccount.UpdatedAt, &dataAccount.DeletedAt)
 		if errScan != nil {
 			log.Fatal("error scan SELECT ", errScan.Error())
 		}
@@ -73,6 +73,11 @@ func ReadAccount(db *sql.DB) {
 	}
 
 	for _, v := range accounts {
-		fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt)
+		//Cek apakah deleted_at nya memiliki nilai atau tidak
+		if v.DeletedAt.Valid == true {
+			fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v, DeletedAt: %v\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt, v.DeletedAt.Time)
+		} else {
+			fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v, DeletedAt: Null\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt)
+		}
 	}
 }

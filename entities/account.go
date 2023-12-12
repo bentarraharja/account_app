@@ -1,6 +1,9 @@
 package entities
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type Account struct {
 	ID        int
@@ -12,5 +15,5 @@ type Account struct {
 	Balance   int
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt time.Time
+	DeletedAt sql.NullTime
 }
