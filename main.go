@@ -58,50 +58,52 @@ func main() {
 	for {
 		// Menampilkan menu
 		fmt.Println("Menu:")
-		fmt.Println("1. Add Account (Register)")
-		fmt.Println("2. Login")
-		fmt.Println("3. Read Account")
-		fmt.Println("4. Update Account")
-		fmt.Println("5. Delete Account")
-		fmt.Println("6. Top-Up")
-		fmt.Println("7. Transfer")
-		fmt.Println("8. History Top-Up")
-		fmt.Println("9. History Transfer")
-		fmt.Println("10. View Other User Profile")
-		fmt.Println("0. Keluar dari Sistem")
+		fmt.Println("[1] Add Account (Register)")
+		fmt.Println("[2] Login")
+		fmt.Println("[3] Read Account")
+		fmt.Println("[4] Update Account")
+		fmt.Println("[5] Delete Account")
+		fmt.Println("[6] Top-Up")
+		fmt.Println("[7] Transfer")
+		fmt.Println("[8] History Top-Up")
+		fmt.Println("[9] History Transfer")
+		fmt.Println("[10] View Other User Profile")
+		fmt.Println("[0] Keluar dari Sistem")
 		fmt.Print("Pilihan Anda: ")
 		fmt.Scan(&choice)
+		fmt.Println("========================================================OUTPUT=======================================================")
 
 		// Melakukan aksi berdasarkan pilihan menu
 		switch choice {
 		case 1:
 			controllers.AddAccount(db)
-		case 2:
-			Login()
+		// case 2:
+		// 	Login()
 		case 3:
 			controllers.ReadAccount(db)
-		case 4:
-			UpdateAccount()
+		// case 4:
+		// 	UpdateAccount()
 		case 5:
 			var accountID int
 			fmt.Print("Enter the ID of the account to soft delete: ")
 			fmt.Scan(&accountID)
 			controllers.DeleteAccount(db, accountID)
-		case 6:
-			TopUp()
-		case 7:
-			Transfer()
-		case 8:
-			HistoryTopUp()
-		case 9:
-			HistoryTransfer()
-		case 10:
-			ViewOtherUserProfile()
+		// case 6:
+		// 	TopUp()
+		// case 7:
+		// 	Transfer()
+		// case 8:
+		// 	HistoryTopUp()
+		// case 9:
+		// 	HistoryTransfer()
+		// case 10:
+		// 	ViewOtherUserProfile()
 		case 0:
 			fmt.Println("Terima kasih telah bertransaksi.")
 			return
 		default:
 			fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
 		}
+		fmt.Println("=====================================================================================================================")
 	}
 }
