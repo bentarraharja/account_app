@@ -2,6 +2,7 @@ package main
 
 import (
 	"account_app/controllers"
+	"account_app/entities"
 	"database/sql"
 	"fmt"
 	"log"
@@ -54,56 +55,96 @@ func main() {
 	//Close connection to database
 	defer db.Close()
 
+	var sessionLogin entities.Account
 	var choice int
 	for {
 		// Menampilkan menu
 		fmt.Println("Menu:")
 		fmt.Println("[1] Add Account (Register)")
 		fmt.Println("[2] Login")
-		fmt.Println("[3] Read Account")
-		fmt.Println("[4] Update Account")
-		fmt.Println("[5] Delete Account")
-		fmt.Println("[6] Top-Up")
-		fmt.Println("[7] Transfer")
-		fmt.Println("[8] History Top-Up")
-		fmt.Println("[9] History Transfer")
-		fmt.Println("[10] View Other User Profile")
 		fmt.Println("[0] Keluar dari Sistem")
 		fmt.Print("Pilihan Anda: ")
 		fmt.Scan(&choice)
 		fmt.Println("========================================================OUTPUT=======================================================")
 
-		// Melakukan aksi berdasarkan pilihan menu
+		// Menampilkan menu ke-1
 		switch choice {
 		case 1:
 			controllers.AddAccount(db)
-		// case 2:
-		// 	Login()
-		case 3:
-			controllers.ReadAccount(db)
-		// case 4:
-		// 	UpdateAccount()
-		case 5:
-			var accountID int
-			fmt.Print("Enter the ID of the account to soft delete: ")
-			fmt.Scan(&accountID)
-			controllers.DeleteAccount(db, accountID)
-		// case 6:
-		// 	TopUp()
-		// case 7:
-		// 	Transfer()
-		// case 8:
-		// 	HistoryTopUp()
-		// case 9:
-		// 	HistoryTransfer()
-		// case 10:
-		// 	ViewOtherUserProfile()
+		case 2:
+			fmt.Print("Enter your phone number: ")
+			var phone string
+			fmt.Scan(&phone)
+			fmt.Print("Enter your password: ")
+			var password string
+			fmt.Scan(&password)
+			dataLogin, err := controllers.Login(db, phone, password)
+			sessionLogin = *dataLogin
+			if err != nil {
+				//menampilkan error dengan value error di controllerAccount
+				fmt.Println(err)
+				return
+			}
+			// Berhasil login
+			fmt.Println("--------------------------------------------------------")
+			fmt.Println("Login successful!")
+			fmt.Println("Selamat datang", dataLogin.FullName)
+			fmt.Println("--------------------------------------------------------")
+			if err == nil {
+				// jika login berhasil tanpa error maka akan menampilkan menu ke-2
+				var pilih int
+				var exit bool
+				for !exit {
+					fmt.Println("[3] Read Account")
+					fmt.Println("[4] Update Account")
+					fmt.Println("[5] Delete Account")
+					fmt.Println("[6] Top-Up")
+					fmt.Println("[7] Transfer")
+					fmt.Println("[8] History Top-Up")
+					fmt.Println("[9] History Transfer")
+					fmt.Println("[10] View Other User Profile")
+					fmt.Println("[0] Logout")
+					fmt.Print("Pilihan Anda: ")
+					fmt.Scan(&pilih)
+					fmt.Println("========================================================OUTPUT=======================================================")
+					switch pilih {
+					case 3:
+						controllers.ReadAccount(db, &sessionLogin)
+					// case 4:
+					// 	UpdateAccount()
+					case 5:
+						var accountID int
+						fmt.Print("Enter the ID of the account to soft delete: ")
+						fmt.Scan(&accountID)
+						controllers.DeleteAccount(db, accountID)
+					// case 6:
+					// 	TopUp()
+					// case 7:
+					// 	Transfer()
+					// case 8:
+					// 	HistoryTopUp()
+					// case 9:
+					// 	HistoryTransfer()
+					// case 10:
+					// 	ViewOtherUserProfile()
+					case 0:
+						fmt.Println("Berhasil Logout.")
+						exit = true
+						fmt.Println("=====================================================================================================================")
+						break
+					default:
+						fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
+					}
+					fmt.Println("=====================================================================================================================")
+				}
+			}
 		case 0:
 			fmt.Println("Terima kasih telah bertransaksi.")
+			fmt.Println("=====================================================================================================================")
 			return
 		default:
 			fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
+			fmt.Println("=====================================================================================================================")
 		}
-		fmt.Println("=====================================================================================================================")
 	}
 }
