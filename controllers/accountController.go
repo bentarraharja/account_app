@@ -14,7 +14,7 @@ func AddAccount(db *sql.DB) {
 	var newAccount entities.Account
 
 	fmt.Print("Enter nama: ")
-	fmt.Scan(&newAccount.Fullname)
+	fmt.Scan(&newAccount.FullName)
 	fmt.Print("Enter alamat: ")
 	fmt.Scan(&newAccount.Address)
 	fmt.Print("Enter phone: ")
@@ -27,7 +27,7 @@ func AddAccount(db *sql.DB) {
 	newAccount.CreatedAt = time.Now()
 
 	// Perform the SQL INSERT operation
-	_, err := db.Exec("INSERT INTO accounts (Fullname,Address,Phone,Email, Password,Balance,Created_at) VALUES (?, ?,?, ?,?, ?,?)", newAccount.Fullname, newAccount.Address, newAccount.Phone, newAccount.Email, newAccount.Password, newAccount.Balance, newAccount.CreatedAt)
+	_, err := db.Exec("INSERT INTO accounts (Fullname,Address,Phone,Email, Password,Balance,Created_at) VALUES (?, ?,?, ?,?, ?,?)", newAccount.FullName, newAccount.Address, newAccount.Phone, newAccount.Email, newAccount.Password, newAccount.Balance, newAccount.CreatedAt)
 	if err != nil {
 		log.Println("Error adding account:", err)
 		return
