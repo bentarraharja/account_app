@@ -129,13 +129,15 @@ func main() {
 						fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
 					}
 					fmt.Println("=====================================================================================================================")
-					var konfirmasi string
-					fmt.Print("Apakah anda ingin memilih menu lagi? (y/n): ")
-					fmt.Scan(&konfirmasi)
-					if konfirmasi != "y" {
-						log.Println("Logout Account")
-						fmt.Println("=====================================================================================================================")
-						exit = true
+					if exit != true {
+						var konfirmasi string
+						fmt.Print("Apakah anda ingin memilih menu lagi? (y/n): ")
+						fmt.Scan(&konfirmasi)
+						if konfirmasi != "y" {
+							log.Println("Logout Account")
+							fmt.Println("=====================================================================================================================")
+							exit = true
+						}
 					}
 				}
 			}
