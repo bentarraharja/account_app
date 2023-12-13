@@ -122,20 +122,27 @@ func main() {
 					// case 10:
 					// 	ViewOtherUserProfile()
 					case 0:
-						fmt.Println("Berhasil Logout.")
+						log.Println("Berhasil Logout.")
 						exit = true
 						fmt.Println("=====================================================================================================================")
-						break
 					default:
 						fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
 					}
 					fmt.Println("=====================================================================================================================")
+					var konfirmasi string
+					fmt.Print("Apakah anda ingin memilih menu lagi? (y/n): ")
+					fmt.Scan(&konfirmasi)
+					if konfirmasi != "y" {
+						log.Println("Logout Account")
+						fmt.Println("=====================================================================================================================")
+						exit = true
+					}
 				}
 			}
 		case 0:
-			fmt.Println("Terima kasih telah bertransaksi.")
+			log.Println("Terima kasih telah bertransaksi, Exit program...")
 			fmt.Println("=====================================================================================================================")
-			return
+			os.Exit(0)
 		default:
 			fmt.Println("Pilihan tidak valid. Silakan coba lagi.")
 			fmt.Println("=====================================================================================================================")
