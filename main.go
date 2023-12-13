@@ -119,12 +119,11 @@ func main() {
 					// 	HistoryTransfer()
 					case 10:
 						var Phone string
-						fmt.Print("Enter the UserID of the user to view: ")
+						fmt.Print("Masukan phone yang profilenya ingin dilihat: ")
 						fmt.Scan(&Phone)
 
 						if err := controllers.ViewOtherUserProfile(db, Phone); err != nil {
 							log.Println("Error viewing user profile:", err)
-							return
 						}
 					case 0:
 						log.Println("Berhasil Logout.")
