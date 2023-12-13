@@ -48,13 +48,13 @@ func DeleteAccount(db *sql.DB, accountID int) {
 	fmt.Println("Account successfully soft deleted!")
 }
 
-func ReadAccount(db *sql.DB) {
+func ReadAccount(db *sql.DB, sessionLogin *entities.Account) {
 	// SELECT data
 	// Menyimpan data yang dibaca di query SELECT
 	var accounts []entities.Account
 
 	// menjalankan perintah query SELECT
-	rows, errSelect := db.Query("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts")
+	rows, errSelect := db.Query("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts where phone = ?", sessionLogin.Phone)
 	// handle error query SELECT
 	if errSelect != nil {
 		log.Fatal("error run query SELECT ", errSelect.Error())
@@ -62,22 +62,38 @@ func ReadAccount(db *sql.DB) {
 
 	//Proses membaca per baris/row
 	for rows.Next() {
-		var dataAccount entities.Account
 		// proses scan dataAccount
-		errScan := rows.Scan(&dataAccount.ID, &dataAccount.FullName, &dataAccount.Address, &dataAccount.Phone, &dataAccount.Email, &dataAccount.Password, &dataAccount.Balance, &dataAccount.CreatedAt, &dataAccount.UpdatedAt, &dataAccount.DeletedAt)
+		errScan := rows.Scan(&sessionLogin.ID, &sessionLogin.FullName, &sessionLogin.Address, &sessionLogin.Phone, &sessionLogin.Email, &sessionLogin.Password, &sessionLogin.Balance, &sessionLogin.CreatedAt, &sessionLogin.UpdatedAt, &sessionLogin.DeletedAt)
 		if errScan != nil {
 			log.Fatal("error scan SELECT ", errScan.Error())
 		}
-		// memasukkan dataAccount ke accounts
-		accounts = append(accounts, dataAccount)
+		// memasukkan sessionLogin ke accounts
+		accounts = append(accounts, *sessionLogin)
 	}
 
 	for _, v := range accounts {
 		//Cek apakah deleted_at nya memiliki nilai atau tidak
 		if v.DeletedAt.Valid == true {
-			fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v, DeletedAt: %v\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt, v.DeletedAt.Time)
+			fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v, DeletedAt: %v\n\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt, v.DeletedAt.Time)
 		} else {
-			fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v, DeletedAt: Null\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt)
+			fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v, DeletedAt: Null\n\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt)
 		}
 	}
+}
+
+func Login(db *sql.DB, phone, password string) (*entities.Account, error) {
+	var dataLogin entities.Account
+
+	// Mengambil satu baris data dari tabel accounts berdasarkan nomor telepon dan kata sandi
+	err := db.QueryRow("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts WHERE phone = ? AND password = ?", phone, password).
+		Scan(&dataLogin.ID, &dataLogin.FullName, &dataLogin.Address, &dataLogin.Phone, &dataLogin.Email, &dataLogin.Password, &dataLogin.Balance, &dataLogin.CreatedAt, &dataLogin.UpdatedAt, &dataLogin.DeletedAt)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("login failed: account not found")
+		}
+		// Terjadi error lain
+		return nil, fmt.Errorf("login failed: %v", err)
+	}
+	return &dataLogin, nil
 }
