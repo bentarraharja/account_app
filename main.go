@@ -72,19 +72,13 @@ func main() {
 		case 1:
 			controllers.AddAccount(db)
 		case 2:
-			fmt.Print("Enter your phone number: ")
-			var phone string
-			fmt.Scan(&phone)
-			fmt.Print("Enter your password: ")
-			var password string
-			fmt.Scan(&password)
-			dataLogin, err := controllers.Login(db, phone, password)
-			sessionLogin = *dataLogin
+			dataLogin, err := controllers.Login(db)
 			if err != nil {
-				//menampilkan error dengan value error di controllerAccount
-				fmt.Println(err)
-				return
+				//menampilkan error dengan value error di controllerAccount dan menghentikan program program
+				log.Fatal(err)
 			}
+			//menampung data account yang login kedalam variabel sessionLogin
+			sessionLogin = *dataLogin
 			// Berhasil login
 			fmt.Println("--------------------------------------------------------")
 			fmt.Println("Login successful!")

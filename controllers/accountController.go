@@ -49,7 +49,6 @@ func DeleteAccount(db *sql.DB, accountID int) {
 }
 
 func ReadAccount(db *sql.DB, sessionLogin *entities.Account) {
-	// SELECT data
 	// Menyimpan data yang dibaca di query SELECT
 	var accounts []entities.Account
 
@@ -62,7 +61,7 @@ func ReadAccount(db *sql.DB, sessionLogin *entities.Account) {
 
 	//Proses membaca per baris/row
 	for rows.Next() {
-		// proses scan dataAccount
+		// proses scan data pada sessionLogin
 		errScan := rows.Scan(&sessionLogin.ID, &sessionLogin.FullName, &sessionLogin.Address, &sessionLogin.Phone, &sessionLogin.Email, &sessionLogin.Password, &sessionLogin.Balance, &sessionLogin.CreatedAt, &sessionLogin.UpdatedAt, &sessionLogin.DeletedAt)
 		if errScan != nil {
 			log.Fatal("error scan SELECT ", errScan.Error())
@@ -81,13 +80,23 @@ func ReadAccount(db *sql.DB, sessionLogin *entities.Account) {
 	}
 }
 
-func Login(db *sql.DB, phone, password string) (*entities.Account, error) {
+func Login(db *sql.DB) (*entities.Account, error) {
+	//mendapatkan data dari variabel yang di input
+	fmt.Print("Enter your phone number: ")
+	var phone string
+	fmt.Scan(&phone)
+	fmt.Print("Enter your password: ")
+	var password string
+	fmt.Scan(&password)
+
+	//mendapatkan data dari data account dan memasukannya ke dalam struct Account
 	var dataLogin entities.Account
 
 	// Mengambil satu baris data dari tabel accounts berdasarkan nomor telepon dan kata sandi
 	err := db.QueryRow("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts WHERE phone = ? AND password = ?", phone, password).
 		Scan(&dataLogin.ID, &dataLogin.FullName, &dataLogin.Address, &dataLogin.Phone, &dataLogin.Email, &dataLogin.Password, &dataLogin.Balance, &dataLogin.CreatedAt, &dataLogin.UpdatedAt, &dataLogin.DeletedAt)
 
+	//error handling
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("login failed: account not found")
