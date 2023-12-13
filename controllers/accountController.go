@@ -108,3 +108,33 @@ func Login(db *sql.DB) (*entities.Account, error) {
 	}
 	return &dataLogin, nil
 }
+
+func ViewOtherUserProfile(db *sql.DB, Phone string) error {
+	var Account entities.Account
+
+	query := "SELECT id, full_name, address, phone, email, password, balance, created_at, deleted_at FROM accounts WHERE phone = ?"
+	err := db.QueryRow(query, Phone).Scan(
+		&Account.ID, &Account.FullName, &Account.Address, &Account.Phone, &Account.Email,
+		&Account.Password, &Account.Balance, &Account.CreatedAt, &Account.DeletedAt,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("Error viewing account profile:", err)
+		}
+		return fmt.Errorf("error fetching user details: %v", err)
+	}
+
+	fmt.Println("User Details:")
+	fmt.Printf("ID: %v\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: %v\nBalance: %v\nCreatedAt: %v",
+		Account.ID, Account.FullName, Account.Address, Account.Phone, Account.Email, Account.Password, Account.Balance, Account.CreatedAt)
+
+	// Check if DeletedAt is valid before printing
+	if Account.DeletedAt.Valid {
+		fmt.Printf("\nDeletedAt: %v", Account.DeletedAt.Time.Format("2006-01-02 15:04:05"))
+	} else {
+		fmt.Println("\nDeletedAt: Null")
+	}
+
+	return nil
+}

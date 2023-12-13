@@ -117,8 +117,15 @@ func main() {
 					// 	HistoryTopUp()
 					// case 9:
 					// 	HistoryTransfer()
-					// case 10:
-					// 	ViewOtherUserProfile()
+					case 10:
+						var Phone string
+						fmt.Print("Enter the UserID of the user to view: ")
+						fmt.Scan(&Phone)
+
+						if err := controllers.ViewOtherUserProfile(db, Phone); err != nil {
+							log.Println("Error viewing user profile:", err)
+							return
+						}
 					case 0:
 						log.Println("Berhasil Logout.")
 						exit = true
