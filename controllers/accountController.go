@@ -126,8 +126,8 @@ func ViewOtherUserProfile(db *sql.DB, Phone string) error {
 	}
 
 	fmt.Println("User Details:")
-	fmt.Printf("ID: %v\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: %v\nBalance: %v\nCreatedAt: %v",
-		Account.ID, Account.FullName, Account.Address, Account.Phone, Account.Email, Account.Password, Account.Balance, Account.CreatedAt)
+	fmt.Printf("ID: *****\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: ****\nBalance: ****\nCreatedAt: ****",
+		Account.FullName, Account.Address, Account.Phone, Account.Email)
 
 	// Check if DeletedAt is valid before printing
 	if Account.DeletedAt.Valid {
