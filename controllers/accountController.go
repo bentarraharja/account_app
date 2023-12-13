@@ -93,7 +93,7 @@ func Login(db *sql.DB) (*entities.Account, error) {
 	var dataLogin entities.Account
 
 	// Mengambil satu baris data dari tabel accounts berdasarkan nomor telepon dan kata sandi
-	err := db.QueryRow("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts WHERE phone = ? AND password = ?", phone, password).
+	err := db.QueryRow("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts WHERE phone = ? AND password = ? AND deleted_at IS NULL", phone, password).
 		Scan(&dataLogin.ID, &dataLogin.FullName, &dataLogin.Address, &dataLogin.Phone, &dataLogin.Email, &dataLogin.Password, &dataLogin.Balance, &dataLogin.CreatedAt, &dataLogin.UpdatedAt, &dataLogin.DeletedAt)
 
 	//error handling
