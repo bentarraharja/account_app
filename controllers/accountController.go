@@ -75,9 +75,9 @@ func ReadAccount(db *sql.DB, sessionLogin *entities.Account) {
 	for _, v := range accounts {
 		//Cek apakah deleted_at nya memiliki nilai atau tidak
 		if v.DeletedAt.Valid == true {
-			fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v, DeletedAt: %v\n\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt, v.DeletedAt.Time)
+			fmt.Printf("ID: %v\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: %v\nBalance: %v\nCreatedAt: %v\nUpdatedAt: %v\nDeletedAt: %v\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt, v.DeletedAt.Time)
 		} else {
-			fmt.Printf("ID: %v, FullName: %v, Address: %v, Phone: %v, Email: %v, Password: %v, Balance: %v, CreatedAt: %v, UpdatedAt: %v, DeletedAt: Null\n\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt)
+			fmt.Printf("ID: %v\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: %v\nBalance: %v\nCreatedAt: %v\nUpdatedAt: %v\nDeletedAt: Null\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt)
 		}
 	}
 }
@@ -183,8 +183,8 @@ func ViewOtherUserProfile(db *sql.DB, Phone string) error {
 		return fmt.Errorf("error fetching user details: %v", err)
 	}
 
-	fmt.Println("User Details:")
-	fmt.Printf("ID: *****\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: ****\nBalance: ****",
+	fmt.Println("Account Details:")
+	fmt.Printf("ID: *****\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: ****\nBalance: ****\n",
 		Account.FullName, Account.Address, Account.Phone, Account.Email)
 
 	// Check if DeletedAt is valid before printing
