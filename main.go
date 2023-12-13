@@ -104,8 +104,8 @@ func main() {
 					switch pilih {
 					case 3:
 						controllers.ReadAccount(db, &sessionLogin)
-					// case 4:
-					// 	UpdateAccount()
+					case 4:
+						controllers.UpdateAccount(db, &sessionLogin)
 					case 5:
 						controllers.DeleteAccount(db, &sessionLogin)
 						exit = true

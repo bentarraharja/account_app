@@ -82,6 +82,64 @@ func ReadAccount(db *sql.DB, sessionLogin *entities.Account) {
 	}
 }
 
+func UpdateAccount(db *sql.DB, sessionLogin *entities.Account) {
+	// mengisi data yang ingin di UPDATE
+	fmt.Println("***NOTE: jika tidak ingin merubah data pada kolom tertentu gunakan (-)***")
+	fmt.Print("Masukan nama baru: ")
+	var fullName string
+	fmt.Scan(&fullName)
+	if fullName == "-" {
+		fullName = sessionLogin.FullName
+	} else {
+		sessionLogin.FullName = fullName
+	}
+	fmt.Print("Masukan alamat baru: ")
+	var address string
+	fmt.Scan(&address)
+	if address == "-" {
+		address = sessionLogin.Address
+	} else {
+		sessionLogin.Address = address
+	}
+	fmt.Print("Masukan phone baru: ")
+	var phone string
+	fmt.Scan(&phone)
+	if phone == "-" {
+		phone = sessionLogin.Phone
+	} else {
+		sessionLogin.Phone = phone
+	}
+	fmt.Print("Masukan email baru: ")
+	var email string
+	fmt.Scan(&email)
+	if email == "-" {
+		email = sessionLogin.Email
+	} else {
+		sessionLogin.Email = email
+	}
+	fmt.Print("Masukan Password baru: ")
+	var password string
+	fmt.Scan(&password)
+	if password == "-" {
+		password = sessionLogin.Password
+	} else {
+		sessionLogin.Password = password
+	}
+
+	//Menjalankan query UPDATE
+	result, errUpd := db.Exec("UPDATE accounts SET full_name = ?, address = ?, phone = ?, email = ?, password = ? WHERE id = ?", fullName, address, phone, email, password, sessionLogin.ID)
+	if errUpd != nil {
+		log.Fatal("error run query UPDATE", errUpd.Error())
+	} else {
+		row, _ := result.RowsAffected()
+		if row > 0 {
+			log.Println("Success update data!")
+		} else {
+			fmt.Println("Tidak ada data yang di update!")
+		}
+	}
+}
+
 func Login(db *sql.DB) (*entities.Account, error) {
 	//mendapatkan data dari variabel yang di input
 	fmt.Print("Enter your phone number: ")
