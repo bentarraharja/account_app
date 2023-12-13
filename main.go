@@ -107,10 +107,8 @@ func main() {
 					// case 4:
 					// 	UpdateAccount()
 					case 5:
-						var accountID int
-						fmt.Print("Enter the ID of the account to soft delete: ")
-						fmt.Scan(&accountID)
-						controllers.DeleteAccount(db, accountID)
+						controllers.DeleteAccount(db, &sessionLogin)
+						exit = true
 					// case 6:
 					// 	TopUp()
 					// case 7:
