@@ -27,7 +27,7 @@ func AddAccount(db *sql.DB) {
 	newAccount.CreatedAt = time.Now()
 
 	// Perform the SQL INSERT operation
-	_, err := db.Exec("INSERT INTO accounts (Fullname,Address,Phone,Email, Password,Balance,Created_at) VALUES (?, ?,?, ?,?, ?,?)", newAccount.FullName, newAccount.Address, newAccount.Phone, newAccount.Email, newAccount.Password, newAccount.Balance, newAccount.CreatedAt)
+	_, err := db.Exec("INSERT INTO accounts (full_name, address, phone, email, password, balance, created_at) VALUES (?, ?,?, ?,?, ?,?)", newAccount.FullName, newAccount.Address, newAccount.Phone, newAccount.Email, newAccount.Password, newAccount.Balance, newAccount.CreatedAt)
 	if err != nil {
 		log.Println("Error adding account:", err)
 		return
@@ -37,15 +37,17 @@ func AddAccount(db *sql.DB) {
 
 }
 
-func DeleteAccount(db *sql.DB, accountID int) {
+func DeleteAccount(db *sql.DB, sessionLogin *entities.Account) {
 	// Perform the SQL UPDATE operation
-	_, err := db.Exec("UPDATE accounts SET deleted_at = ? WHERE id = ?", time.Now(), accountID)
+	_, err := db.Exec("UPDATE accounts SET deleted_at = ? WHERE phone = ?", time.Now(), sessionLogin.Phone)
 	if err != nil {
 		log.Println("Error soft deleting account:", err)
 		return
 	}
 
-	fmt.Println("Account successfully soft deleted!")
+	log.Println("Account successfully soft deleted!")
+	fmt.Println("Exit menu.....")
+
 }
 
 func ReadAccount(db *sql.DB, sessionLogin *entities.Account) {
