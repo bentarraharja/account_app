@@ -112,7 +112,7 @@ func Login(db *sql.DB) (*entities.Account, error) {
 func ViewOtherUserProfile(db *sql.DB, Phone string) error {
 	var Account entities.Account
 
-	query := "SELECT id, full_name, address, phone, email, password, balance, created_at, deleted_at FROM accounts WHERE phone = ?"
+	query := "SELECT id, full_name, address, phone, email, password, balance, created_at, deleted_at FROM accounts WHERE phone = ? AND deleted_at is null "
 	err := db.QueryRow(query, Phone).Scan(
 		&Account.ID, &Account.FullName, &Account.Address, &Account.Phone, &Account.Email,
 		&Account.Password, &Account.Balance, &Account.CreatedAt, &Account.DeletedAt,
@@ -126,15 +126,15 @@ func ViewOtherUserProfile(db *sql.DB, Phone string) error {
 	}
 
 	fmt.Println("User Details:")
-	fmt.Printf("ID: *****\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: ****\nBalance: ****\nCreatedAt: ****",
+	fmt.Printf("ID: *****\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: ****\nBalance: ****",
 		Account.FullName, Account.Address, Account.Phone, Account.Email)
 
 	// Check if DeletedAt is valid before printing
-	if Account.DeletedAt.Valid {
-		fmt.Printf("\nDeletedAt: %v", Account.DeletedAt.Time.Format("2006-01-02 15:04:05"))
-	} else {
-		fmt.Println("\nDeletedAt: Null")
-	}
+	// if Account.DeletedAt.Valid {
+	// 	fmt.Printf("\nDeletedAt: %v", Account.DeletedAt.Time.Format("2006-01-02 15:04:05"))
+	// } else {
+	// 	fmt.Println("\nDeletedAt: Null")
+	// }
 
 	return nil
 }
