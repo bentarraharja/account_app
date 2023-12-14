@@ -146,7 +146,7 @@ func main() {
 						// for _, transfer := range transfers {
 						// 	fmt.Printf("TransferID: %d, SenderID: %d, ReceiverID: %d, Amount: %d, CreatedAt: %s\n", transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("2006-01-02 15:04:05"))
 						// }
-
+		
 					case 10:
 						var Phone string
 						fmt.Print("Masukan phone yang profilenya ingin dilihat: ")
