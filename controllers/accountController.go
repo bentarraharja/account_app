@@ -8,6 +8,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func AddAccount(db *sql.DB) {
@@ -26,6 +27,13 @@ func AddAccount(db *sql.DB) {
 	newAccount.Balance = 0.0
 	newAccount.CreatedAt = time.Now()
 
+	// Melakukan hashing password menggunakan bcrypt
+	hashPassword, errHash := bcrypt.GenerateFromPassword([]byte(newAccount.Password), bcrypt.DefaultCost)
+	if errHash != nil {
+		log.Fatal("Error hashing password:", errHash.Error())
+	}
+	newAccount.Password = string(hashPassword)
+
 	// Perform the SQL INSERT operation
 	_, err := db.Exec("INSERT INTO accounts (full_name, address, phone, email, password, balance, created_at) VALUES (?, ?,?, ?,?, ?,?)", newAccount.FullName, newAccount.Address, newAccount.Phone, newAccount.Email, newAccount.Password, newAccount.Balance, newAccount.CreatedAt)
 	if err != nil {
@@ -33,7 +41,7 @@ func AddAccount(db *sql.DB) {
 		return
 	}
 
-	fmt.Println("Account successfully registered!")
+	log.Println("Account successfully registered!")
 
 }
 
@@ -123,7 +131,13 @@ func UpdateAccount(db *sql.DB, sessionLogin *entities.Account) {
 	if password == "-" {
 		password = sessionLogin.Password
 	} else {
-		sessionLogin.Password = password
+		// Melakukan update hashing password menggunakan bcrypt
+		hashUpdate, errHashUpdt := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if errHashUpdt != nil {
+			log.Fatal("Error hashing password:", errHashUpdt.Error())
+		}
+		password = string(hashUpdate)
+		sessionLogin.Password = string(hashUpdate)
 	}
 
 	//Menjalankan query UPDATE
@@ -149,20 +163,36 @@ func Login(db *sql.DB) (*entities.Account, error) {
 	var password string
 	fmt.Scan(&password)
 
-	//mendapatkan data dari data account dan memasukannya ke dalam struct Account
+	// Mendapatkan data dari data account dan memasukannya ke dalam struct Account
 	var dataLogin entities.Account
 
-	// Mengambil satu baris data dari tabel accounts berdasarkan nomor telepon dan kata sandi
-	err := db.QueryRow("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts WHERE phone = ? AND password = ? AND deleted_at IS NULL", phone, password).
-		Scan(&dataLogin.ID, &dataLogin.FullName, &dataLogin.Address, &dataLogin.Phone, &dataLogin.Email, &dataLogin.Password, &dataLogin.Balance, &dataLogin.CreatedAt, &dataLogin.UpdatedAt, &dataLogin.DeletedAt)
+	// Mendapatkan password yang telah di hash dari tabel accounts berdasarkan nomor telepon
+	var hashedPassword string
+	err := db.QueryRow("SELECT password FROM accounts WHERE phone = ? AND deleted_at IS NULL", phone).
+		Scan(&hashedPassword)
 
 	//error handling
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("login failed: account not found")
+			return nil, fmt.Errorf("login failed: account not found!")
 		}
 		// Terjadi error lain
 		return nil, fmt.Errorf("login failed: %v", err)
+	}
+
+	// Verifikasi / compare password
+	errComp := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if errComp != nil {
+		return nil, fmt.Errorf("login failed: incorrect password")
+	}
+
+	// Jika verifikasi berhasil, maka akan mengambil satu baris data dari tabel accounts berdasarkan phone
+	errGet := db.QueryRow("SELECT id, full_name, address, phone, email, password, balance, created_at, updated_at, deleted_at FROM accounts WHERE phone = ? AND deleted_at IS NULL", phone).
+		Scan(&dataLogin.ID, &dataLogin.FullName, &dataLogin.Address, &dataLogin.Phone, &dataLogin.Email, &dataLogin.Password, &dataLogin.Balance, &dataLogin.CreatedAt, &dataLogin.UpdatedAt, &dataLogin.DeletedAt)
+
+	//error handling
+	if errGet != nil {
+		return nil, fmt.Errorf("login failed: %v", errGet)
 	}
 	return &dataLogin, nil
 }
@@ -184,7 +214,7 @@ func ViewOtherUserProfile(db *sql.DB, Phone string) error {
 	}
 
 	fmt.Println("Account Details:")
-	fmt.Printf("ID: *****\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: ****\nBalance: ****\n",
+	fmt.Printf("ID: *****\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: *****\nBalance: *****\n",
 		Account.FullName, Account.Address, Account.Phone, Account.Email)
 
 	// Check if DeletedAt is valid before printing
