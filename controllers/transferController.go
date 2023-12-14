@@ -150,7 +150,7 @@ func HistoryTransfer(db *sql.DB, phoneNumber string) ([]entities.Transfer, error
 	fmt.Printf("Transfer History for Account with Phone Number %s:\n", phoneNumber)
 	for _, transfer := range transferHistory {
 		fmt.Printf("Transfer ID: %d\nSender Account ID: %d\nReceiver Account ID: %d\nAmount: %d\nCreated At: %s\n\n",
-			transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format(time.RFC3339))
+			transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("15:05 02-Jan-2006"))
 	}
 
 	return transferHistory, nil
