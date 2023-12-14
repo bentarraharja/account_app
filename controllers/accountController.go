@@ -209,6 +209,15 @@ func TopUp(db *sql.DB, sessionLogin *entities.Account) {
 	fmt.Print("Masukan amount top-up: ")
 	fmt.Scan(&topupBalance)
 
+	// Pada proses transaksi bank sebaiknya INSERT topup history dulu baru UPDATE saldo di akunnya, gunannya untuk menghindari keluhan user akibat value saldo yang tiba tiba berubah ketika terjadi kesalahan
+	// Melakukan proses INSERT topup history
+	_, errInsTopup := tx.Exec("INSERT INTO top_ups (account_id, amount) VALUES (?, ?)", sessionLogin.ID, topupBalance)
+	if errInsTopup != nil {
+		// Rollback topup jika ada kesalahan dalam INSERT data ke table topup
+		tx.Rollback()
+		log.Fatal("error run query INSERT topup ", errInsTopup.Error())
+	}
+
 	// Melakukan proses update saldo
 	result, errTopup := tx.Exec("UPDATE accounts SET balance = balance + ? WHERE id = ?", topupBalance, sessionLogin.ID)
 	if errTopup != nil {
@@ -222,14 +231,6 @@ func TopUp(db *sql.DB, sessionLogin *entities.Account) {
 		} else {
 			fmt.Println("Tidak ada data balance yang di update!")
 		}
-	}
-
-	// Melakukan proses INSERT topup history
-	_, errInsTopup := tx.Exec("INSERT INTO top_ups (account_id, amount) VALUES (?, ?)", sessionLogin.ID, topupBalance)
-	if errInsTopup != nil {
-		// Rollback topup jika ada kesalahan dalam INSERT data ke table topup
-		tx.Rollback()
-		log.Fatal("error run query INSERT topup ", errInsTopup.Error())
 	}
 
 	// Simpan perubahan dengan commit jika semua proses berhasil
