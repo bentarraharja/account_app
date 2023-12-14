@@ -109,8 +109,8 @@ func main() {
 					case 5:
 						controllers.DeleteAccount(db, &sessionLogin)
 						exit = true
-						// case 6:
-						// 	TopUp()
+					case 6:
+						controllers.TopUp(db, &sessionLogin)
 					case 7:
 						// Transfer Funds
 						var senderIdentifier, receiverIdentifier string
@@ -130,8 +130,8 @@ func main() {
 							log.Println("Error transferring funds:", err)
 						}
 
-						// case 8:
-						// 	HistoryTopUp()
+					case 8:
+						controllers.HistoryTopUp(db, &sessionLogin)
 					case 9:
 						var phoneNumber string
 						fmt.Print("Enter the account phone number: ")
