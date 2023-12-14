@@ -111,12 +111,42 @@ func main() {
 						exit = true
 					case 6:
 						controllers.TopUp(db, &sessionLogin)
-					// case 7:
-					// 	Transfer()
+					case 7:
+						// Transfer Funds
+						var senderIdentifier, receiverIdentifier string
+						var amount int
+
+						fmt.Print("Enter your phone (sender): ")
+						fmt.Scan(&senderIdentifier)
+
+						fmt.Print("Enter the recipient's phone (receiver): ")
+						fmt.Scan(&receiverIdentifier)
+
+						fmt.Print("Enter the transfer amount: ")
+						fmt.Scan(&amount)
+
+						_, err := controllers.Transfer(db, senderIdentifier, receiverIdentifier, amount)
+						if err != nil {
+							log.Println("Error transferring funds:", err)
+						}
+
 					case 8:
 						controllers.HistoryTopUp(db, &sessionLogin)
-					// case 9:
-					// 	HistoryTransfer()
+					case 9:
+						var phoneNumber string
+						fmt.Print("Enter the account phone number: ")
+						fmt.Scan(&phoneNumber)
+
+						_, err := controllers.HistoryTransfer(db, phoneNumber)
+						if err != nil {
+							log.Println("Error displaying transfer history for account:", err)
+						}
+
+						// fmt.Println("Transfer History:")
+						// for _, transfer := range transfers {
+						// 	fmt.Printf("TransferID: %d, SenderID: %d, ReceiverID: %d, Amount: %d, CreatedAt: %s\n", transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("2006-01-02 15:04:05"))
+						// }
+		
 					case 10:
 						var Phone string
 						fmt.Print("Masukan phone yang profilenya ingin dilihat: ")
