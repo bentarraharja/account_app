@@ -110,7 +110,7 @@ func Transfer(db *sql.DB, senderIdentifier, receiverIdentifier string, amount in
 		return nil, fmt.Errorf("error committing transaction: %v", err)
 	}
 
-	fmt.Printf("Transfer of $%v from %s to %s successful.\n", amount, sender.FullName, receiver.FullName)
+	fmt.Printf("Transfer of Rp.%v from %s to %s successful.\n", amount, sender.FullName, receiver.FullName)
 	return transfer, nil
 }
 
@@ -148,9 +148,13 @@ func HistoryTransfer(db *sql.DB, phoneNumber string) ([]entities.Transfer, error
 	}
 
 	fmt.Printf("Transfer History for Account with Phone Number %s:\n", phoneNumber)
-	for _, transfer := range transferHistory {
-		fmt.Printf("Transfer ID: %d\nSender Account ID: %d\nReceiver Account ID: %d\nAmount: %d\nCreated At: %s\n\n",
-			transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("15:05 02-Jan-2006"))
+	if len(transferHistory) == 0 {
+		fmt.Println("Tidak ada data history transfer")
+	} else {
+		for _, transfer := range transferHistory {
+			fmt.Printf("Transfer ID: %d\nSender Account ID: %d\nReceiver Account ID: %d\nAmount: Rp.%d\nCreated At: %s\n\n",
+				transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("15:05 02-Jan-2006"))
+		}
 	}
 
 	return transferHistory, nil

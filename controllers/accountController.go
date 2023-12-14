@@ -75,9 +75,9 @@ func ReadAccount(db *sql.DB, sessionLogin *entities.Account) {
 	for _, v := range accounts {
 		//Cek apakah deleted_at nya memiliki nilai atau tidak
 		if v.DeletedAt.Valid == true {
-			fmt.Printf("ID: %v\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: %v\nBalance: %v\nCreatedAt: %v\nUpdatedAt: %v\nDeletedAt: %v\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt, v.DeletedAt.Time)
+			fmt.Printf("ID: %v\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: %v\nBalance: Rp.%v\nCreatedAt: %v\nUpdatedAt: %v\nDeletedAt: %v\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt, v.DeletedAt.Time)
 		} else {
-			fmt.Printf("ID: %v\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: %v\nBalance: %v\nCreatedAt: %v\nUpdatedAt: %v\nDeletedAt: Null\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt)
+			fmt.Printf("ID: %v\nFullName: %v\nAddress: %v\nPhone: %v\nEmail: %v\nPassword: %v\nBalance: Rp.%v\nCreatedAt: %v\nUpdatedAt: %v\nDeletedAt: Null\n", v.ID, v.FullName, v.Address, v.Phone, v.Email, v.Password, v.Balance, v.CreatedAt, v.UpdatedAt)
 		}
 	}
 }

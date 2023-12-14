@@ -18,7 +18,7 @@ func TopUp(db *sql.DB, sessionLogin *entities.Account) {
 
 	// Input topup balance
 	var topupBalance int
-	fmt.Print("Masukan amount top-up: ")
+	fmt.Print("Masukan amount top-up (Rp): ")
 	fmt.Scan(&topupBalance)
 
 	// Pada proses transaksi bank sebaiknya INSERT topup history dulu baru UPDATE saldo di akunnya, gunannya untuk menghindari keluhan user akibat value saldo yang tiba tiba berubah ketika terjadi kesalahan
@@ -51,7 +51,7 @@ func TopUp(db *sql.DB, sessionLogin *entities.Account) {
 		log.Fatal(errCom)
 	}
 
-	fmt.Println("Transaksi top-up berhasil!")
+	fmt.Printf("Transaksi top-up Rp.%v berhasil!\n", topupBalance)
 }
 
 func HistoryTopUp(db *sql.DB, sessionLogin *entities.Account) {
@@ -77,8 +77,13 @@ func HistoryTopUp(db *sql.DB, sessionLogin *entities.Account) {
 		topups = append(topups, dataTopup)
 	}
 
-	//Proses menampilkan data history top-up
-	for _, v := range topups {
-		fmt.Printf("ID: %v\nAccountID: %v\nAmount: %v\nCreatedAt: %v\n", v.ID, v.AccountID, v.Amount, v.CreatedAt)
+	// Mengecek apakah ada data history top-up
+	if len(topups) == 0 {
+		fmt.Println("Tidak ada data history topup")
+	} else {
+		//Proses menampilkan data history top-up jika datanya ada
+		for _, v := range topups {
+			fmt.Printf("ID: %v\nAccountID: %v\nAmount: Rp.%v\nCreatedAt: %v\n", v.ID, v.AccountID, v.Amount, v.CreatedAt)
+		}
 	}
 }
