@@ -84,7 +84,7 @@ func HistoryTopUp(db *sql.DB, sessionLogin *entities.Account) {
 	} else {
 		//Proses menampilkan data history top-up jika datanya ada
 		for _, v := range topups {
-			fmt.Printf("ID: %v\nAccountID: %v\nAmount: Rp.%v\nCreatedAt: %v\n", v.ID, v.AccountID, v.Amount, v.CreatedAt)
+			fmt.Printf("ID: %v\nAccountID: %v\nAmount: Rp.%v\nCreatedAt: %v\n\n", v.ID, v.AccountID, v.Amount, v.CreatedAt)
 		}
 	}
 }
