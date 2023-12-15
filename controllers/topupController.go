@@ -31,6 +31,7 @@ func TopUp(db *sql.DB, sessionLogin *entities.Account) {
 	}
 
 	// Melakukan proses update saldo
+	sessionLogin.Balance += topupBalance
 	result, errTopup := tx.Exec("UPDATE accounts SET balance = balance + ? WHERE id = ?", topupBalance, sessionLogin.ID)
 	if errTopup != nil {
 		// Rollback topup jika ada kesalahan dalam menambahkan balance ke table account
