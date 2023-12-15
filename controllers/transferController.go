@@ -44,8 +44,8 @@ func Transfer(db *sql.DB, sessionLogin *entities.Account) (*entities.Transfer, e
 	var receiver *entities.Account
 	// var sessionLogin *entities.Account
 
-	fmt.Print("Enter your phone (sender): ")
-	fmt.Scan(&sessionLogin)
+	// fmt.Print("Enter your phone (sender): ")
+	// fmt.Scan(&sessionLogin)
 	fmt.Print("Enter the recipient's phone (receiver): ")
 	fmt.Scan(&receiverIdentifier)
 
@@ -164,8 +164,8 @@ func HistoryTransfer(db *sql.DB, sessionLogin *entities.Account) ([]entities.Tra
 		fmt.Println("Tidak ada data history transfer")
 	} else {
 		for _, transfer := range transferHistory {
-			fmt.Printf("Transfer ID: %d\nSender Account ID: %d\nReceiver Account ID: %d\nAmount: Rp.%d\nCreated At: %s\n\n",
-				transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("15:05 02-Jan-2006"))
+			fmt.Printf("Transfer ID: %d\nSender Account ID: %d\nReceiver Account ID: %d\nAmount: Rp.%d\nCreated At: %v\n\n",
+				transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("15:05 02-Jan-2006")) //
 		}
 	}
 
