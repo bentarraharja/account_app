@@ -36,13 +36,25 @@ func GetUser(db *sql.DB, identifier interface{}) (*entities.Account, error) {
 }
 
 // Transfer menggunakan ID atau nomor telepon
-func Transfer(db *sql.DB, senderIdentifier, receiverIdentifier string, amount int) (*entities.Transfer, error) {
+func Transfer(db *sql.DB, sessionLogin *entities.Account) (*entities.Transfer, error) {
+	var receiverIdentifier string
+	var amount int
+
 	var sender *entities.Account
 	var receiver *entities.Account
+	// var sessionLogin *entities.Account
+
+	// fmt.Print("Enter your phone (sender): ")
+	// fmt.Scan(&sessionLogin)
+	fmt.Print("Enter the recipient's phone (receiver): ")
+	fmt.Scan(&receiverIdentifier)
+
+	fmt.Print("Enter the transfer amount (Rp): ")
+	fmt.Scan(&amount)
 
 	// Check if sender and receiver exist
 	//sender
-	sender, err := GetUser(db, senderIdentifier)
+	sender, err := GetUser(db, sessionLogin.Phone)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching sender details: %v", err)
 	}
@@ -53,7 +65,7 @@ func Transfer(db *sql.DB, senderIdentifier, receiverIdentifier string, amount in
 	}
 
 	// Check if sender has sufficient balance
-	if sender.Balance < amount {
+	if sessionLogin.Balance < amount {
 		return nil, fmt.Errorf("insufficient funds for transfer")
 	}
 
@@ -69,7 +81,7 @@ func Transfer(db *sql.DB, senderIdentifier, receiverIdentifier string, amount in
 	}()
 
 	// Update sender's balance
-	_, err = tx.Exec("UPDATE accounts SET balance =  ? WHERE id = ?", sender.Balance-amount, sender.ID)
+	_, err = tx.Exec("UPDATE accounts SET balance =  ? WHERE id = ?", sessionLogin.Balance-amount, sessionLogin.ID)
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("error updating sender's balance: %v", err)
@@ -83,7 +95,7 @@ func Transfer(db *sql.DB, senderIdentifier, receiverIdentifier string, amount in
 	}
 
 	transfer := &entities.Transfer{
-		AccountIdSender:   sender.ID,
+		AccountIdSender:   sessionLogin.ID,
 		AccountIdReceiver: receiver.ID,
 		Amount:            amount,
 		CreatedAt:         time.Now(),
@@ -114,11 +126,11 @@ func Transfer(db *sql.DB, senderIdentifier, receiverIdentifier string, amount in
 	return transfer, nil
 }
 
-func HistoryTransfer(db *sql.DB, phoneNumber string) ([]entities.Transfer, error) {
+func HistoryTransfer(db *sql.DB, sessionLogin *entities.Account) ([]entities.Transfer, error) {
 	var accountID int
 
 	// Assuming you have a table 'accounts' with columns 'ID' and 'Phone'
-	err := db.QueryRow("SELECT id FROM accounts WHERE phone = ?", phoneNumber).Scan(&accountID) // phoneNumber).Scan(&accountID)
+	err := db.QueryRow("SELECT id FROM accounts WHERE phone = ?", sessionLogin.Phone).Scan(&accountID) // phoneNumber).Scan(&accountID)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching account ID: %v", err)
 	}
@@ -147,13 +159,13 @@ func HistoryTransfer(db *sql.DB, phoneNumber string) ([]entities.Transfer, error
 		return nil, fmt.Errorf("error iterating over transfer records: %v", err)
 	}
 
-	fmt.Printf("Transfer History for Account with Phone Number %s:\n", phoneNumber)
+	fmt.Printf("Transfer History for Account with Phone Number %s\n", sessionLogin.Phone)
 	if len(transferHistory) == 0 {
 		fmt.Println("Tidak ada data history transfer")
 	} else {
 		for _, transfer := range transferHistory {
-			fmt.Printf("Transfer ID: %d\nSender Account ID: %d\nReceiver Account ID: %d\nAmount: Rp.%d\nCreated At: %s\n\n",
-				transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("15:05 02-Jan-2006"))
+			fmt.Printf("Transfer ID: %d\nSender Account ID: %d\nReceiver Account ID: %d\nAmount: Rp.%d\nCreated At: %v\n\n",
+				transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("15:05 02-Jan-2006")) //
 		}
 	}
 
