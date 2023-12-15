@@ -113,19 +113,13 @@ func main() {
 						controllers.TopUp(db, &sessionLogin)
 					case 7:
 						// Transfer Funds
-						var senderIdentifier, receiverIdentifier string
-						var amount int
+						// var receiverIdentifier string
+						// var amount int
 
-						fmt.Print("Enter your phone (sender): ")
-						fmt.Scan(&senderIdentifier)
+						// fmt.Print("Enter your phone (sender): ")
+						// fmt.Scan(&sessionLogin)
 
-						fmt.Print("Enter the recipient's phone (receiver): ")
-						fmt.Scan(&receiverIdentifier)
-
-						fmt.Print("Enter the transfer amount (Rp): ")
-						fmt.Scan(&amount)
-
-						_, err := controllers.Transfer(db, senderIdentifier, receiverIdentifier, amount)
+						_, err := controllers.Transfer(db, &sessionLogin)
 						if err != nil {
 							log.Println("Error transferring funds:", err)
 						}
@@ -133,11 +127,11 @@ func main() {
 					case 8:
 						controllers.HistoryTopUp(db, &sessionLogin)
 					case 9:
-						var phoneNumber string
-						fmt.Print("Enter the account phone number: ")
-						fmt.Scan(&phoneNumber)
+						// var phoneNumber string
+						// fmt.Print("Enter the account phone number: ")
+						// fmt.Scan(&phoneNumber)
 
-						_, err := controllers.HistoryTransfer(db, phoneNumber)
+						_, err := controllers.HistoryTransfer(db, &sessionLogin)
 						if err != nil {
 							log.Println("Error displaying transfer history for account:", err)
 						}
