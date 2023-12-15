@@ -11,6 +11,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// func TimeIndo() time.Time {
+// 	// Tentukan lokasi waktu Indonesia
+// 	loc, err := time.LoadLocation("Asia/Jakarta")
+// 	if err != nil {
+// 		log.Fatal("Error loading location:", err)
+// 	}
+
+// 	// Dapatkan waktu saat ini
+// 	currentTime := time.Now()
+
+// 	// Atur zona waktu sesuai dengan lokasi Indonesia
+// 	timeIndo := currentTime.In(loc)
+// 	return timeIndo
+// }
+
 func AddAccount(db *sql.DB) {
 	var newAccount entities.Account
 
@@ -35,7 +50,7 @@ func AddAccount(db *sql.DB) {
 	newAccount.Password = string(hashPassword)
 
 	// Perform the SQL INSERT operation
-	_, err := db.Exec("INSERT INTO accounts (full_name, address, phone, email, password, balance, created_at) VALUES (?, ?,?, ?,?, ?,?)", newAccount.FullName, newAccount.Address, newAccount.Phone, newAccount.Email, newAccount.Password, newAccount.Balance, newAccount.CreatedAt)
+	_, err := db.Exec("INSERT INTO accounts (full_name, address, phone, email, password, balance, created_at) VALUES (?, ?,?, ?,?, ?,?)", newAccount.FullName, newAccount.Address, newAccount.Phone, newAccount.Email, newAccount.Password, newAccount.Balance, newAccount.CreatedAt.Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Println("Error adding account:", err)
 		return
@@ -47,7 +62,7 @@ func AddAccount(db *sql.DB) {
 
 func DeleteAccount(db *sql.DB, sessionLogin *entities.Account) {
 	// Perform the SQL UPDATE operation
-	_, err := db.Exec("UPDATE accounts SET deleted_at = ? WHERE phone = ?", time.Now(), sessionLogin.Phone)
+	_, err := db.Exec("UPDATE accounts SET deleted_at = ? WHERE phone = ?", time.Now().Format("2006-01-02 15:04:05"), sessionLogin.Phone)
 	if err != nil {
 		log.Println("Error soft deleting account:", err)
 		return

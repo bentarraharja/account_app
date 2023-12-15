@@ -103,7 +103,7 @@ func Transfer(db *sql.DB, sessionLogin *entities.Account) (*entities.Transfer, e
 
 	// Insert transfer record
 	result, err := tx.Exec("INSERT INTO transfers (account_id_sender, account_id_receiver, amount, created_at) VALUES (?, ?, ?, ?)",
-		transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt)
+		transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("2006-01-02 15:04:05"))
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("error inserting transfer record: %v", err)
@@ -165,7 +165,7 @@ func HistoryTransfer(db *sql.DB, sessionLogin *entities.Account) ([]entities.Tra
 	} else {
 		for _, transfer := range transferHistory {
 			fmt.Printf("Transfer ID: %d\nSender Account ID: %d\nReceiver Account ID: %d\nAmount: Rp.%d\nCreated At: %v\n\n",
-				transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("15:05 02-Jan-2006")) //
+				transfer.ID, transfer.AccountIdSender, transfer.AccountIdReceiver, transfer.Amount, transfer.CreatedAt.Format("2006-01-02 15:04:05")) //
 		}
 	}
 
