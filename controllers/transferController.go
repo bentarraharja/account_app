@@ -81,7 +81,9 @@ func Transfer(db *sql.DB, sessionLogin *entities.Account) (*entities.Transfer, e
 	}()
 
 	// Update sender's balance
-	_, err = tx.Exec("UPDATE accounts SET balance =  ? WHERE id = ?", sessionLogin.Balance-amount, sessionLogin.ID)
+	//karena kita memanfaatkan sessionLogin maka kita harus selalu mengupdate sessonLogin.Balance nya agar sesuai dengan update balance di database
+	sessionLogin.Balance -= amount
+	_, err = tx.Exec("UPDATE accounts SET balance =  ? WHERE id = ?", sessionLogin.Balance, sessionLogin.ID)
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("error updating sender's balance: %v", err)
