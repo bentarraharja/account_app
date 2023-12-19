@@ -10,6 +10,13 @@ import (
 )
 
 func TopUp(db *sql.DB, sessionLogin *entities.Account) {
+	//proses scanning agar data sessionLogin.Balance uptodate
+	errFetch := db.QueryRow("SELECT balance FROM accounts WHERE phone = ?", sessionLogin.Phone).Scan(&sessionLogin.Balance)
+	if errFetch != nil {
+		log.Printf("Error fetching sessionLogin.Balance: %v", errFetch)
+		return
+	}
+
 	// Memulai proses topup
 	tx, err := db.Begin()
 	if err != nil {
@@ -32,8 +39,9 @@ func TopUp(db *sql.DB, sessionLogin *entities.Account) {
 
 	// Melakukan proses update saldo
 	//karena kita memanfaatkan sessionLogin maka kita harus selalu mengupdate sessonLogin.Balance nya agar sesuai dengan update balance di database
-	sessionLogin.Balance += topupBalance
-	result, errTopup := tx.Exec("UPDATE accounts SET balance = balance + ? WHERE id = ?", topupBalance, sessionLogin.ID)
+	sessionLogin.Balance += topupBalance //setelah revisi sebenarnya tidak perlu menggunakan ini lagi karena setiap diawal transaksi dilakukan scanning agar data pada sessionLogin update
+	result, errTopup := tx.Exec("UPDATE accounts SET balance = ? WHERE id = ?", sessionLogin.Balance, sessionLogin.ID)
+	// result, errTopup := tx.Exec("UPDATE accounts SET balance = balance + ? WHERE id = ?", topupBalance, sessionLogin.ID)
 	if errTopup != nil {
 		// Rollback topup jika ada kesalahan dalam menambahkan balance ke table account
 		tx.Rollback()

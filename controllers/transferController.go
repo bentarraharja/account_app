@@ -37,6 +37,12 @@ func GetUser(db *sql.DB, identifier interface{}) (*entities.Account, error) {
 
 // Transfer menggunakan ID atau nomor telepon
 func Transfer(db *sql.DB, sessionLogin *entities.Account) (*entities.Transfer, error) {
+	//proses scanning agar data sessionLogin.Balance uptodate
+	errFetch := db.QueryRow("SELECT balance FROM accounts WHERE phone = ?", sessionLogin.Phone).Scan(&sessionLogin.Balance)
+	if errFetch != nil {
+		return nil, fmt.Errorf("error fetching sessionLogin.Balance: %v", errFetch)
+	}
+
 	var receiverIdentifier string
 	var amount int
 
